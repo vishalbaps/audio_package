@@ -1,7 +1,6 @@
 import 'package:audio_player_package/audio_player_package.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../bloc/audio_bloc.dart';
 import '../../bloc/slider_seek_bloc.dart';
 
 class AudioSeekBar extends StatelessWidget {
@@ -15,14 +14,7 @@ class AudioSeekBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SliderSeekBloc, SliderSeekState>(
       builder: (context, state) {
-        final duration = state.totalDuration.inSeconds.toDouble();
-
-        if (duration == 0.0) {
-          return const SizedBox.shrink();
-        }
-
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Slider(
               value: state.playPosition,
@@ -46,7 +38,7 @@ class AudioSeekBar extends StatelessWidget {
               activeColor: activeColor,
               inactiveColor: inactiveColor,
             ),
-            SizedBox(height: 10,),
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

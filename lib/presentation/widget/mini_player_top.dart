@@ -9,23 +9,23 @@ class MiniPlayerTop extends StatelessWidget {
   final double height;
   final Color color;
   final double iconPadding;
-  final Icon? playIcon;
-  final Icon? pauseIcon;
-  final Color? playPauseIconColor;
+  final IconData playIcon;
+  final IconData pauseIcon;
+  final Color playPauseIconColor;
   final double iconSize;
   final Color cancelIconColor;
   final TextStyle? textStyle;
-  final void Function(AudioContent currentTrack)? onTap;
+  final void Function(List<AudioContent> album, AudioContent track)? onTap;
 
   const MiniPlayerTop({
     super.key,
     this.height = 30,
     this.color = Colors.grey,
-    this.iconPadding = 20,
+    this.iconPadding = 0,
     this.iconSize = 20,
-    this.playIcon,
-    this.pauseIcon,
-    this.playPauseIconColor,
+    this.playIcon = Icons.play_arrow,
+    this.pauseIcon = Icons.pause,
+    this.playPauseIconColor = Colors.blue,
     this.cancelIconColor = Colors.black,
     this.textStyle,
     this.onTap,
@@ -35,8 +35,8 @@ class MiniPlayerTop extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AudioBloc, AudioState>(
       builder: (_, state) {
-        return GestureDetector(
-          onTap: () => onTap?.call(state.audioContent!),
+        return InkWell(
+          onTap: () => onTap?.call(state.album ?? [], state.audioContent!),
           child: Container(
             height: height,
             width: MediaQuery.of(context).size.width,
@@ -57,14 +57,12 @@ class MiniPlayerTop extends StatelessWidget {
                 SizedBox(width: 15),
                 Text(state.audioContent!.contentTitle, style: textStyle),
                 Spacer(),
-                InkWell(
-                  onTap: () {
+                IconButton(
+                  padding: EdgeInsets.only(right: iconPadding),
+                  icon: Icon(Icons.close, size: iconSize, color: cancelIconColor),
+                  onPressed: () {
                     context.read<AudioBloc>().add(AudioEventStop());
                   },
-                  child: Padding(
-                    padding: EdgeInsets.only(right: iconPadding),
-                    child: Icon(Icons.close, size: iconSize, color: cancelIconColor),
-                  ),
                 ),
               ],
             ),

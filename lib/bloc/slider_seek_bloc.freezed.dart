@@ -29,14 +29,14 @@ mixin _$SliderSeekState {
 /// @nodoc
 abstract class $SliderSeekStateCopyWith<$Res> {
   factory $SliderSeekStateCopyWith(
-          SliderSeekState value, $Res Function(SliderSeekState) then) =
-      _$SliderSeekStateCopyWithImpl<$Res, SliderSeekState>;
+      SliderSeekState value, $Res Function(SliderSeekState) then) =
+  _$SliderSeekStateCopyWithImpl<$Res, SliderSeekState>;
   @useResult
   $Res call(
       {Duration currentDuration,
-      Duration totalDuration,
-      bool isUserSeek,
-      double playPosition});
+        Duration totalDuration,
+        bool isUserSeek,
+        double playPosition});
 }
 
 /// @nodoc
@@ -61,19 +61,19 @@ class _$SliderSeekStateCopyWithImpl<$Res, $Val extends SliderSeekState>
       currentDuration: null == currentDuration
           ? _value.currentDuration
           : currentDuration // ignore: cast_nullable_to_non_nullable
-              as Duration,
+      as Duration,
       totalDuration: null == totalDuration
           ? _value.totalDuration
           : totalDuration // ignore: cast_nullable_to_non_nullable
-              as Duration,
+      as Duration,
       isUserSeek: null == isUserSeek
           ? _value.isUserSeek
           : isUserSeek // ignore: cast_nullable_to_non_nullable
-              as bool,
+      as bool,
       playPosition: null == playPosition
           ? _value.playPosition
           : playPosition // ignore: cast_nullable_to_non_nullable
-              as double,
+      as double,
     ) as $Val);
   }
 }
@@ -82,15 +82,15 @@ class _$SliderSeekStateCopyWithImpl<$Res, $Val extends SliderSeekState>
 abstract class _$$SliderSeekStateImplCopyWith<$Res>
     implements $SliderSeekStateCopyWith<$Res> {
   factory _$$SliderSeekStateImplCopyWith(_$SliderSeekStateImpl value,
-          $Res Function(_$SliderSeekStateImpl) then) =
-      __$$SliderSeekStateImplCopyWithImpl<$Res>;
+      $Res Function(_$SliderSeekStateImpl) then) =
+  __$$SliderSeekStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
       {Duration currentDuration,
-      Duration totalDuration,
-      bool isUserSeek,
-      double playPosition});
+        Duration totalDuration,
+        bool isUserSeek,
+        double playPosition});
 }
 
 /// @nodoc
@@ -113,19 +113,19 @@ class __$$SliderSeekStateImplCopyWithImpl<$Res>
       null == currentDuration
           ? _value.currentDuration
           : currentDuration // ignore: cast_nullable_to_non_nullable
-              as Duration,
+      as Duration,
       null == totalDuration
           ? _value.totalDuration
           : totalDuration // ignore: cast_nullable_to_non_nullable
-              as Duration,
+      as Duration,
       null == isUserSeek
           ? _value.isUserSeek
           : isUserSeek // ignore: cast_nullable_to_non_nullable
-              as bool,
+      as bool,
       null == playPosition
           ? _value.playPosition
           : playPosition // ignore: cast_nullable_to_non_nullable
-              as double,
+      as double,
     ));
   }
 }

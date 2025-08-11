@@ -2,15 +2,14 @@ import 'dart:convert';
 
 import 'package:audio_player_package/utils/string_utils.dart';
 import 'package:audio_service/audio_service.dart';
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../utils/constants.dart';
 
 part 'audio_content.g.dart';
 
 @JsonSerializable()
-class AudioContent extends Equatable{
+class AudioContent {
   String contentId;
   String contentTitle;
   String? subTitle;
@@ -36,9 +35,6 @@ class AudioContent extends Equatable{
   factory AudioContent.fromJson(Map<String, dynamic> json) => _$AudioContentFromJson(json);
 
   Map<String, dynamic> toJson() => _$AudioContentToJson(this);
-
-  @override
-  List<Object?> get props => [contentId];
 }
 
 extension ContentExtraFunction on AudioContent {

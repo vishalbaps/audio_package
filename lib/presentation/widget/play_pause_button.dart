@@ -7,24 +7,24 @@ import '../../utils/enum.dart';
 
 class PlayPauseButton extends StatelessWidget {
   final AudioContent currentTrack;
-  final Icon? playIcon;
-  final Icon? pauseIcon;
-  final Color? iconColor;
+  final IconData playIcon;
+  final IconData pauseIcon;
+  final Color iconColor;
   final double iconSize;
   final List<AudioContent> album;
 
-  final BoxDecoration? decoration;
+  final ButtonStyle? buttonStyle;
   final EdgeInsets padding;
 
   const PlayPauseButton({
     super.key,
     required this.currentTrack,
-    this.playIcon,
-    this.pauseIcon,
-    this.iconColor,
+    this.playIcon = Icons.play_arrow,
+    this.pauseIcon = Icons.pause,
+    this.iconColor = Colors.blue,
     this.iconSize = 25,
     required this.album,
-    this.decoration,
+    this.buttonStyle,
     this.padding = EdgeInsets.zero,
   });
 
@@ -56,29 +56,26 @@ class PlayPauseButton extends StatelessWidget {
 
         final Widget child = () {
           if (!isCurrentTrack) {
-            return playIcon ?? Icon(Icons.play_arrow, color: iconColor ?? Colors.blue, size: iconSize);
+            return Icon(playIcon, color: iconColor, size: iconSize);
           }
 
           switch (state.loadingStatus) {
             case AudioLoadingStatus.playing:
-              return pauseIcon ?? Icon(Icons.pause, color: iconColor ?? Colors.blue, size: iconSize);
+              return Icon(pauseIcon, color: iconColor, size: iconSize);
 
             case AudioLoadingStatus.loading:
               return SizedBox(
                 width: iconSize,
                 height: iconSize,
-                child: CupertinoActivityIndicator(radius: iconSize / 2.5, color: iconColor ?? Colors.blue),
+                child: CupertinoActivityIndicator(radius: iconSize / 2.5, color: iconColor),
               );
 
             default:
-              return playIcon ?? Icon(Icons.play_arrow, color: iconColor ?? Colors.blue, size: iconSize);
+              return Icon(playIcon, color: iconColor, size: iconSize);
           }
         }();
 
-        return InkWell(
-          onTap: () => playAudio(),
-          child: Container(padding: padding, decoration: decoration, child: child),
-        );
+        return IconButton(onPressed: () => playAudio(), icon: child, padding: padding, style: buttonStyle);
       },
     );
   }

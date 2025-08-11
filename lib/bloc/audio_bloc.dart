@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -23,23 +24,25 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
   StreamSubscription? _durationSubscription;
   StreamSubscription? _playingStateSubscription;
   StreamSubscription? _albumSubscription;
+  StreamSubscription? _buttonSubscription;
 
   @override
   Future<void> close() async {
     _albumSubscription?.cancel();
     _durationSubscription?.cancel();
     _playingStateSubscription?.cancel();
+    _buttonSubscription?.cancel();
     _audioManager.dispose();
     super.close();
   }
 
   AudioBloc(this._audioManager, this._internetConnectivity) : super(const AudioState.playing(AudioLoadingStatus.none)) {
-   /* _durationSubscription = _audioManager.durationStream.listen((duration) {
+    _durationSubscription = _audioManager.durationStream.listen((duration) {
       // controlling auto play
       if (duration.$2 != Duration.zero && duration.$1 >= duration.$2 && !state.isAutoPlay) {
         _audioManager.pause();
       }
-    });*/
+    });
 
     _playingStateSubscription = _audioManager.stateStream.listen((audioState) {
       add(AudioEventPlayingStateChanged(audioState));
@@ -50,14 +53,18 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
       add(AudioEventChangeAlbum(albumList));
     });
 
-    /*_albumSubscription = _audioManager.albumItemStream.listen((albumItem) {
+    _buttonSubscription = _audioManager.buttonStream.listen((mediaButton) {
+      add(AudioEventButtonClicked(mediaButton));
+    });
+
+    _albumSubscription = _audioManager.albumItemStream.listen((albumItem) {
       //1- currentIndex
       //2- isNextAvailable
       //3- isPreviousAvailable
       if (state.loadingStatus != AudioLoadingStatus.none) {
         add(AudioEventChangeAlbumItem(albumItem.$1, albumItem.$2, albumItem.$3));
       }
-    });*/
+    });
 
     on<AudioEventPlay>((event, emit) async {
       int index = event.album.indexWhere((e) => e.contentId == event.playId);
@@ -84,7 +91,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
             ),
           );
           try {
-            await _audioManager.playAudio(currentAudioContent.media, album: event.album);
+            await _audioManager.playAudio(currentAudioContent.media, album: event.album, initialIndex: index);
           } catch (e) {
             emit(
               state.copyWith(
@@ -152,6 +159,27 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
       }
     }, transformer: restartable());
 
+    on<AudioEventButtonClicked>((event, emit) async {
+      switch (event.mediaButton) {
+        case MediaButton.media:
+          if (state.loadingStatus == AudioLoadingStatus.playing) {
+            add(AudioEventPause());
+          } else if (state.loadingStatus == AudioLoadingStatus.paused) {
+            add(AudioEventResume());
+          }
+          break;
+        // Remove these, let AudioEventNext / AudioEventPrevious handle it
+        case MediaButton.next:
+          add(AudioEventNext());
+          break;
+        case MediaButton.previous:
+          add(AudioEventPrevious());
+          break;
+        default:
+          break;
+      }
+    }, transformer: restartable());
+
     on<AudioEventPause>((event, emit) async {
       await _audioManager.pause();
       if (state.audioContent != null) {
@@ -212,7 +240,7 @@ class AudioState with _$AudioState {
     List<AudioContent>? album,
     AudioContent? audioContent,
     Failure? failure,
-    @Default(false) bool isAutoPlay,
+    @Default(true) bool isAutoPlay,
     @Default(true) bool isNextAvailable,
     @Default(false) bool isPreviousAvailable,
     @Default(false) bool isShuffleEnabled,
@@ -251,6 +279,12 @@ class AudioEventAudioSpeed extends AudioEvent {
   final double audioSpeed;
 
   AudioEventAudioSpeed(this.audioSpeed);
+}
+
+class AudioEventButtonClicked extends AudioEvent {
+  final MediaButton mediaButton;
+
+  AudioEventButtonClicked(this.mediaButton);
 }
 
 class AudioEventPause extends AudioEvent {}

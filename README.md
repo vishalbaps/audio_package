@@ -1,15 +1,16 @@
 # Advanced Audio Player Package
 
-A feature-rich, customizable audio player package for Flutter applications. This package provides a simple API for playing audio tracks and playlists with a beautiful, customizable UI.
+A feature-rich, highly customizable audio player package for Flutter apps. It supports playlists, full media controls, beautiful UI components, and background playback with BLoC integration.
 
 ## Features
 
-- 🎵 Play single tracks or playlists
+- 🎵 Play single tracks or full playlists
 - 🎮 Full playback controls (play, pause, stop, seek, next, previous)
-- 🎨 Customizable UI components
+- 🎨 Customizable widgets (mini player, full player, tiles, buttons, etc.)
+- 🧭 Top and bottom mini player support via NavigationScreen
 - 📱 Background playback with notification controls
 - 🧩 BLoC state management
-- 📦 Easy to integrate
+- ⚙️ Easily pluggable in any Flutter app
 
 ## Installation
 
@@ -26,194 +27,102 @@ Or use the following command:
 flutter pub add audio_player_package
 ```
 
-## Usage
 
-### Initialize the player
+🧱 Architecture Overview
+- Player Initialization: Done inside AudioPlayerWrapper
+- UI Layout: Managed with NavigationScreen
+- Playback State: Managed via AudioBloc
+- Seekbar State: Managed via SliderSeekBloc
+- Mini Player: Always active when a track is playing
 
-```dart
-final player = await AdvancedAudioPlayer.initialize(
-  androidNotificationChannelId: 'com.example.audio_player',
-  androidNotificationChannelName: 'Audio Player',
-  androidNotificationOngoing: true,
-);
-```
 
-### Play a track
+## Getting Started
+- 1️⃣ Wrap the App with AudioPlayerWrapper
 
-```dart
-final track = AudioTrack(
-  id: '1',
-  title: 'Song Title',
-  artist: 'Artist Name',
-  album: 'Album Name',
-  url: 'https://example.com/song.mp3',
-  artUri: 'https://example.com/cover.jpg',
-);
-
-player.playTrack(track);
-```
-
-### Play a playlist
 
 ```dart
-final playlist = Playlist(
-  id: 'playlist1',
-  name: 'My Playlist',
-  tracks: [track1, track2, track3],
-);
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-player.playPlaylist(playlist);
-```
-
-### Basic playback controls
-
-```dart
-// Toggle play/pause
-player.playPause();
-
-// Stop playback
-player.stop();
-
-// Skip to next track
-player.next();
-
-// Skip to previous track
-player.previous();
-
-// Seek to position
-player.seek(Duration(seconds: 30));
-
-// Set volume (0.0 to 1.0)
-player.setVolume(0.7);
-
-// Set repeat mode
-player.setRepeatMode(AudioServiceRepeatMode.all);
-
-// Set shuffle mode
-player.setShuffleMode(AudioServiceShuffleMode.all);
-```
-
-## UI Components
-
-### Standard Audio Player Widget
-
-```dart
-AdvancedAudioPlayer.createBlocProvider(
-  player: player,
-  child: Scaffold(
-    body: Center(
-      child: AdvancedAudioPlayer.createAudioPlayerWidget(
-        primaryColor: Colors.blue,
-        backgroundColor: Colors.grey[200],
-        height: 200,
-        showCoverArt: true,
-        showQueue: false,
-      ),
-    ),
-  ),
-);
-```
-
-### Standard Mini Player Widget
-
-```dart
-AdvancedAudioPlayer.createBlocProvider(
-  player: player,
-  child: Scaffold(
-    bottomNavigationBar: AdvancedAudioPlayer.createMiniPlayerWidget(
-      primaryColor: Colors.blue,
-      backgroundColor: Colors.white,
-      onTap: () {
-        // Navigate to full player screen
-      },
-    ),
-  ),
-);
-```
-
-### Custom Audio Player Widget
-
-The package provides highly customizable player widgets that allow you to change icons, colors, styles, and more:
-
-```dart
-AdvancedAudioPlayer.createCustomAudioPlayerWidget(
-  primaryColor: Colors.purple,
-  backgroundColor: Colors.grey[200],
-  height: 250,
-  playIcon: Icons.play_circle_filled,
-  pauseIcon: Icons.pause_circle_filled,
-  nextIcon: Icons.skip_next_rounded,
-  previousIcon: Icons.skip_previous_rounded,
-  stopIcon: Icons.stop_circle,
-  shuffleIcon: Icons.shuffle_on,
-  shuffleOffIcon: Icons.shuffle,
-  repeatIcon: Icons.repeat,
-  repeatOneIcon: Icons.repeat_one,
-  repeatOffIcon: Icons.repeat,
-  titleStyle: TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-    color: Colors.purple,
-  ),
-  artistStyle: TextStyle(
-    fontSize: 14,
-    color: Colors.grey[700],
-  ),
-  sliderActiveColor: Colors.purpleAccent,
-  sliderInactiveColor: Colors.grey[300],
-  sliderThumbColor: Colors.purple,
-  onTrackChanged: (track) {
-    // Handle track change
-  },
-  onPlayStateChanged: (isPlaying) {
-    // Handle play state change
-  },
-);
-```
-
-### Custom Mini Player Widget
-
-```dart
-AdvancedAudioPlayer.createCustomMiniPlayerWidget(
-  primaryColor: Colors.teal,
-  backgroundColor: Colors.teal[50],
-  height: 80,
-  playIcon: Icons.play_arrow_rounded,
-  pauseIcon: Icons.pause_rounded,
-  titleStyle: TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-    color: Colors.teal,
-  ),
-  artistStyle: TextStyle(
-    fontSize: 12,
-    color: Colors.grey[700],
-  ),
-  borderRadius: BorderRadius.circular(16),
-  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-  onTap: () {
-    // Show full player or navigate to player screen
-  },
-);
-```
-
-## Advanced Usage
-
-### Accessing the BLoC directly
-
-```dart
-final bloc = player.bloc;
-
-// Listen to state changes
-bloc.stream.listen((state) {
-  if (state is AudioPlayerReady) {
-    // Handle ready state
+  @override
+  Widget build(BuildContext context) {
+    return AudioPlayerWrapper(
+      child: MaterialApp.router(routerConfig: router),
+    );
   }
-});
-
-// Dispatch events
-bloc.add(PlayTrack(track));
+}
 ```
+
+- 2️⃣ Use NavigationScreen to Get Mini Player Support
+
+```dart
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return NavigationScreen(
+      appbar: AppBar(title: const Text("Screen name")),
+      miniPlayerType: MiniPlayerType.bottom, // or MiniPlayerType.top
+      child: AudioPlayerTile(album: albumList),
+    );
+  }
+}
+
+```
+
+
+## Widgets
+
+- 🎵 AudioPlayerTile (List of Tracks)
+
+```dart
+AudioPlayerTile(
+  album: albumList,
+  imageSize: 48,
+  titleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+  subTitleStyle: TextStyle(fontSize: 12),
+);
+```
+
+- Displays track info with artwork
+- Includes inline play/pause buttons
+- Easily themeable
+
+
+## Playback Controls
+
+- ▶️ Play/Pause
+
+```dart
+PlayPauseButton(currentTrack: track, album: albumList)
+```
+
+
+- ⏭️ Next
+
+```dart
+NextButton(iconColor: Colors.green)
+```
+
+
+- ⏮️ Previous
+
+```dart
+PreviousButton(iconColor: Colors.red)
+```
+
+- 📊 Seek Bar
+
+```dart
+AudioSeekBar(
+activeColor: Colors.blueAccent,
+inactiveColor: Colors.grey,
+textStyle: TextStyle(fontSize: 12),
+)
+```
+
+- Syncs with player position
+- Drag-to-seek support
+- Built with SliderSeekBloc
 
 ## Example
 

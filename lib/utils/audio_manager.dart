@@ -42,6 +42,10 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
 
   Stream<PlayerState> get stateStream => _stateController.stream;
 
+  final StreamController<MediaButton> _buttonController = StreamController<MediaButton>.broadcast();
+
+  Stream<MediaButton> get buttonStream => _buttonController.stream;
+
   Duration? duration;
 
   AudioManager() {
@@ -72,9 +76,9 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
 
       if (sequence.isEmpty) return;
 
-     /* // change album
+      // change album
       var items = sequence.map((source) => (source.tag as MediaItem).audioContent).toList();
-      _albumController.sink.add(items);*/
+      _albumController.sink.add(items);
 
       // Check if next audio is available
       final isNextAvailable = currentIndex + 1 < sequence.length;
@@ -114,7 +118,7 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
         androidNotificationChannelName: 'Music playback',
         androidShowNotificationBadge: true,
         androidNotificationOngoing: true,
-        androidNotificationIcon: 'mipmap/launcher_icon',
+        androidNotificationIcon: 'mipmap/ic_launcher',
       ),
     );
   }
@@ -125,6 +129,7 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
     _stateSubscription?.cancel();
     _playBackSubscription?.cancel();
     _durationSubscription?.cancel();
+    _buttonController.close();
     mediaItem.close();
     playbackState.close();
   }
@@ -132,15 +137,24 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
   @override
   Future<void> onTaskRemoved() => _player.stop();
 
-  Future<void> playAudio(MediaItem media, {Duration? seekTo, List<AudioContent>? album}) async {
+  Future<void> playAudio(MediaItem media, {Duration? seekTo, List<AudioContent>? album, int? initialIndex}) async {
     _currentContent = media;
     await _session?.setActive(true);
-    var duration = await _player.setAudioSource(
-      AudioSource.uri(Uri.parse(media.id)),
-      initialPosition: seekTo,
-      preload: true,
+
+    final playlist = ConcatenatingAudioSource(
+      children:
+          album!.map((audioContent) {
+            return AudioSource.uri(Uri.parse(audioContent.url), tag: audioContent.media);
+          }).toList(),
     );
+
     try {
+      duration = await _player.setAudioSource(
+        playlist,
+        initialPosition: seekTo,
+        preload: true,
+        initialIndex: initialIndex,
+      );
       totalDuration = duration ?? Duration.zero;
       _player.play();
 
@@ -198,12 +212,9 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
 
   Future<void> stop() async {
     // _durationController.sink.add((Duration.zero, Duration.zero));
-    playbackState.add(PlaybackState(
-      controls: [],
-      systemActions: {},
-      processingState: AudioProcessingState.idle,
-      playing: false,
-    ));
+    playbackState.add(
+      PlaybackState(controls: [], systemActions: {}, processingState: AudioProcessingState.idle, playing: false),
+    );
     await _session?.setActive(false);
     await _player.stop();
   }
@@ -233,9 +244,23 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
 
   Future<void> seekToNext() async {
     await _player.seekToNext();
+    // _buttonController.add(MediaButton.next);
   }
 
   Future<void> seekToPrevious() async {
     await _player.seekToPrevious();
+    // _buttonController.add(MediaButton.previous);
+  }
+
+  Future<void> click([MediaButton button = MediaButton.media]) async {
+    _buttonController.sink.add(button);
+  }
+
+  Future<void> skipToNext() async {
+    await seekToNext();
+  }
+
+  Future<void> skipToPrevious() async {
+    await seekToPrevious();
   }
 }

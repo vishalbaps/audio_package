@@ -14,7 +14,7 @@ class MiniPlayerBottom extends StatelessWidget {
   final double tileCornerRadius;
   final double imageSize;
   final bool isShowQueueIcon;
-  final Icon? queueIcon;
+  final IconData queueIcon;
 
   const MiniPlayerBottom({
     super.key,
@@ -26,7 +26,7 @@ class MiniPlayerBottom extends StatelessWidget {
     this.tileCornerRadius = 0,
     this.imageSize = 42,
     this.isShowQueueIcon = true,
-    this.queueIcon,
+    this.queueIcon = Icons.queue_music,
   });
 
   @override
@@ -72,7 +72,7 @@ class MiniPlayerBottom extends StatelessWidget {
                   PlayPauseButton(currentTrack: track, album: state.album ?? [], iconColor: Colors.white),
                   isShowQueueIcon
                       ? IconButton(
-                        icon: queueIcon ?? const Icon(Icons.queue_music, color: Colors.white),
+                        icon: Icon(queueIcon, color: Colors.white),
                         onPressed: () {
                           onTapQueueIcon?.call(state.album ?? [], track);
                         },
