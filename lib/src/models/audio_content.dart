@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:audio_player_package/utils/string_utils.dart';
+import 'package:audio_player_package/src/utils/string_utils.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

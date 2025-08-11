@@ -1,5 +1,5 @@
-import 'package:audio_player_package/utils/audio_manager.dart';
-import 'package:audio_player_package/utils/connections.dart';
+import 'package:audio_player_package/src/utils/audio_manager.dart';
+import 'package:audio_player_package/src/utils/connections.dart';
 import 'package:injectable/injectable.dart';
 
 @module

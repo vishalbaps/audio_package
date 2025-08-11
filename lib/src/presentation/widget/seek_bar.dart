@@ -1,4 +1,5 @@
 import 'package:audio_player_package/audio_player_package.dart';
+import 'package:audio_player_package/src/utils/duration_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/slider_seek_bloc.dart';

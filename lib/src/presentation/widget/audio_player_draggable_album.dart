@@ -1,8 +1,9 @@
-import 'package:audio_player_package/audio_player_package.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bloc/audio_bloc.dart';
 import '../../utils/sliver_utils.dart';
+import 'audio_player_tile.dart';
 
 class AudioPlayerDraggableAlbum extends StatelessWidget {
   final BoxDecoration? decoration;

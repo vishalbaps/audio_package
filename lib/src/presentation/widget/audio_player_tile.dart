@@ -1,5 +1,4 @@
-import 'package:audio_player_package/audio_player_package.dart';
-import 'package:audio_player_package/presentation/widget/play_pause_button.dart';
+import 'package:audio_player_package/src/presentation/widget/play_pause_button.dart';
 import 'package:flutter/material.dart';
 import '../../models/audio_content.dart';
 

@@ -7,12 +7,12 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:just_audio/just_audio.dart';
 
-import '../../../../../models/audio_content.dart';
-import '../../../../../utils/constants.dart';
-import '../../../../../utils/enum.dart';
+import '../models/audio_content.dart';
 import '../models/failure.dart';
 import '../utils/audio_manager.dart';
 import '../utils/connections.dart';
+import '../utils/constants.dart';
+import '../utils/enum.dart';
 
 part 'audio_bloc.freezed.dart';
 

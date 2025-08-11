@@ -1,11 +1,11 @@
-import 'package:audio_player_package/presentation/widget/mini_player_bottom.dart';
-import 'package:audio_player_package/presentation/widget/mini_player_top.dart';
-import 'package:audio_player_package/utils/enum.dart';
+import 'package:audio_player_package/src/presentation/widget/mini_player_bottom.dart';
+import 'package:audio_player_package/src/presentation/widget/mini_player_top.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/audio_bloc.dart';
 import '../models/audio_content.dart';
+import '../utils/enum.dart';
 
 class NavigationScreen extends StatelessWidget {
   final void Function(List<AudioContent> album, AudioContent track)? onMiniPlayerTap;

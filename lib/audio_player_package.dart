@@ -1,24 +1,19 @@
-export 'models/audio_content.dart';
-
-export 'bloc/audio_bloc.dart';
-
-export 'internal/audio_player_wrapper.dart';
-
-export 'presentation/widget/audio_player_tile.dart';
-export 'presentation/widget/mini_player_bottom.dart';
-export 'presentation/widget/mini_player_top.dart';
-export 'presentation/widget/next_button.dart';
-export 'presentation/widget/play_pause_button.dart';
-export 'presentation/widget/previous_button.dart';
-export 'presentation/widget/seek_bar.dart';
-export 'presentation/widget/audio_speed.dart';
-export 'presentation/widget/shuffle.dart';
-export 'presentation/widget/repeat.dart';
-export 'presentation/widget/audio_player_draggable_album.dart';
-
-export 'presentation/navigation_screen.dart';
-
-export 'utils/duration_utils.dart';
-export 'utils/enum.dart';
-export 'utils/audio_manager.dart';
-export 'utils/string_utils.dart';
+export 'src/bloc/audio_bloc.dart';
+export 'src/internal/audio_player_wrapper.dart';
+export 'src/models/audio_content.dart';
+export 'src/presentation/navigation_screen.dart';
+export 'src/presentation/widget/audio_player_draggable_album.dart';
+export 'src/presentation/widget/audio_player_tile.dart';
+export 'src/presentation/widget/audio_speed.dart';
+export 'src/presentation/widget/mini_player_bottom.dart';
+export 'src/presentation/widget/mini_player_top.dart';
+export 'src/presentation/widget/next_button.dart';
+export 'src/presentation/widget/play_pause_button.dart';
+export 'src/presentation/widget/previous_button.dart';
+export 'src/presentation/widget/repeat.dart';
+export 'src/presentation/widget/seek_bar.dart';
+export 'src/presentation/widget/shuffle.dart';
+export 'src/utils/audio_manager.dart';
+export 'src/utils/duration_utils.dart';
+export 'src/utils/enum.dart';
+export 'src/utils/string_utils.dart';

@@ -1,10 +1,12 @@
 import 'package:audio_player_package/audio_player_package.dart';
-import 'package:audio_player_package/models/audio_notification_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
+import '../bloc/audio_bloc.dart';
 import '../bloc/slider_seek_bloc.dart';
+import '../models/audio_notification_settings.dart';
+import '../utils/audio_manager.dart';
 
 class AudioPlayerWrapper extends StatelessWidget {
   final Widget child;

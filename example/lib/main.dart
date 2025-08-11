@@ -1,6 +1,6 @@
 import 'package:audio_player_package/audio_player_package.dart';
-import 'package:audio_player_package/configure.dart';
-import 'package:audio_player_package/models/audio_notification_settings.dart';
+import 'package:audio_player_package/src/configure.dart';
+import 'package:audio_player_package/src/models/audio_notification_settings.dart';
 import 'package:audio_player_package_example/presentation/now_playing_screen.dart';
 import 'package:audio_player_package_example/router.dart';
 import 'package:flutter/material.dart';
