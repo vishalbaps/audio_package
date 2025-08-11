@@ -31,8 +31,13 @@ class SliderSeekBloc extends Bloc<SliderSeekEvent, SliderSeekState> {
       if (event.totalDuration.inSeconds > 0) {
         if (event.currentDuration.inSeconds <= event.totalDuration.inSeconds) {
           var playPosition = event.currentDuration.inSeconds / event.totalDuration.inSeconds;
-          emit(state.copyWith(
-              currentDuration: event.currentDuration, totalDuration: event.totalDuration, playPosition: playPosition));
+          emit(
+            state.copyWith(
+              currentDuration: event.currentDuration,
+              totalDuration: event.totalDuration,
+              playPosition: playPosition,
+            ),
+          );
         }
       }
     }, transformer: droppable());
@@ -57,7 +62,11 @@ class SliderSeekBloc extends Bloc<SliderSeekEvent, SliderSeekState> {
 @freezed
 class SliderSeekState with _$SliderSeekState {
   const factory SliderSeekState(
-      Duration currentDuration, Duration totalDuration, bool isUserSeek, double playPosition) = _SliderSeekState;
+    Duration currentDuration,
+    Duration totalDuration,
+    bool isUserSeek,
+    double playPosition,
+  ) = _SliderSeekState;
 }
 
 @sealed
