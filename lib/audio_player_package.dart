@@ -13,7 +13,4 @@ export 'src/presentation/widget/previous_button.dart';
 export 'src/presentation/widget/repeat.dart';
 export 'src/presentation/widget/seek_bar.dart';
 export 'src/presentation/widget/shuffle.dart';
-export 'src/utils/audio_manager.dart';
-export 'src/utils/duration_utils.dart';
 export 'src/utils/enum.dart';
-export 'src/utils/string_utils.dart';
