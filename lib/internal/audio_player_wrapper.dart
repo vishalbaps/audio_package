@@ -1,36 +1,40 @@
+import 'package:audio_player_package/audio_player_package.dart';
+import 'package:audio_player_package/models/audio_notification_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import '../bloc/audio_bloc.dart';
-import '../bloc/audio_player_config_bloc.dart';
 import '../bloc/slider_seek_bloc.dart';
-import '../models/audio_manager_config.dart';
 
 class AudioPlayerWrapper extends StatelessWidget {
   final Widget child;
+  final AudioNotificationSettings audioNotificationSettings;
 
   const AudioPlayerWrapper({
     super.key,
     required this.child,
+    required this.audioNotificationSettings
   });
 
   @override
   Widget build(BuildContext context) {
+    GetIt.I<AudioManager>().setup(
+      androidNotificationChannelId: audioNotificationSettings.androidNotificationChannelId,
+      androidNotificationChannelName: audioNotificationSettings.androidNotificationChannelName,
+      androidNotificationIcon: audioNotificationSettings.androidNotificationIcon,
+      showNotificationBadge: true,
+      ongoingNotification: true,
+    );
     return MultiBlocProvider(
       providers: [
         // Provide AudioBloc
-        BlocProvider<AudioBloc>(
-          create: (context) => GetIt.I<AudioBloc>(),
-        ),
+        BlocProvider<AudioBloc>(create: (context) => GetIt.I<AudioBloc>()),
 
         // Provide SliderSeekBloc
-        BlocProvider<SliderSeekBloc>(
-          create: (context) => GetIt.I<SliderSeekBloc>(),
-        ),
+        BlocProvider<SliderSeekBloc>(create: (context) => GetIt.I<SliderSeekBloc>()),
 
         // Provide and initialize AudioPlayerConfigBloc
-       /* BlocProvider<AudioPlayerConfigBloc>(
+        /* BlocProvider<AudioPlayerConfigBloc>(
           create: (context) => GetIt.I<AudioPlayerConfigBloc>()
             ..add(
               InitializeAudioManager(
@@ -45,7 +49,7 @@ class AudioPlayerWrapper extends StatelessWidget {
             ),
         ),*/
       ],
-      child: child/*BlocListener<AudioPlayerConfigBloc, AudioPlayerConfigState>(
+      child: child /*BlocListener<AudioPlayerConfigBloc, AudioPlayerConfigState>(
         listener: (context, state) {
           // Debug log to check if initialization is working
           debugPrint("AudioPlayerConfigBloc state changed: $state");
@@ -59,7 +63,7 @@ class AudioPlayerWrapper extends StatelessWidget {
           }
         },
         child: child,
-      ),*/
+      ),*/,
     );
   }
 }

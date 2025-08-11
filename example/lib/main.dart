@@ -1,8 +1,9 @@
+import 'package:audio_player_package/audio_player_package.dart';
 import 'package:audio_player_package/configure.dart';
+import 'package:audio_player_package/models/audio_notification_settings.dart';
 import 'package:audio_player_package_example/presentation/now_playing_screen.dart';
 import 'package:audio_player_package_example/router.dart';
 import 'package:flutter/material.dart';
-import 'package:audio_player_package/audio_player_package.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
@@ -33,7 +34,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AudioPlayerWrapper(child: MaterialApp.router(routerConfig: router));
+    return AudioPlayerWrapper(
+        audioNotificationSettings: AudioNotificationSettings(
+            androidNotificationChannelId: "my_channel_id",
+            androidNotificationChannelName: "My Channel Name",
+            androidNotificationIcon: 'mipmap/ic_launcher'),
+        child: MaterialApp.router(routerConfig: router));
   }
 }
 

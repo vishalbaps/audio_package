@@ -109,16 +109,26 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
   }
 
   static Future<AudioManager> init() async {
+    return AudioManager();
+  }
+
+  Future<AudioManager> setup({
+    required String androidNotificationChannelId,
+    required String androidNotificationChannelName,
+    required String androidNotificationIcon,
+    required bool showNotificationBadge,
+    required bool ongoingNotification,
+  }) async {
     final session = await AudioSession.instance;
     await session.configure(AudioSessionConfiguration.music());
     return AudioService.init(
-      builder: () => AudioManager().._session = session,
+      builder: () => this.._session = session,
       config: AudioServiceConfig(
-        androidNotificationChannelId: 'org.player.channel.audio',
-        androidNotificationChannelName: 'Music playback',
-        androidShowNotificationBadge: true,
-        androidNotificationOngoing: true,
-        androidNotificationIcon: 'mipmap/ic_launcher',
+        androidNotificationChannelId: androidNotificationChannelId,
+        androidNotificationChannelName: androidNotificationChannelName,
+        androidNotificationIcon: androidNotificationIcon,
+        androidShowNotificationBadge: showNotificationBadge,
+        androidNotificationOngoing: ongoingNotification,
       ),
     );
   }

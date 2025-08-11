@@ -1,4 +1,3 @@
-// lib/audio_player_package.dart
 export 'models/audio_content.dart';
 
 export 'bloc/audio_bloc.dart';
