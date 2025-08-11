@@ -25,6 +25,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
   StreamSubscription? _playingStateSubscription;
   StreamSubscription? _albumSubscription;
   StreamSubscription? _buttonSubscription;
+  PlayerState _currentState = PlayerState(false, ProcessingState.idle);
 
   @override
   Future<void> close() async {
@@ -124,6 +125,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
 
     on<AudioEventPlayingStateChanged>((event, emit) async {
       if (state.audioContent != null) {
+        _currentState = event.playerState;
         switch (event.playerState.processingState) {
           case ProcessingState.idle:
             emit(state.copyWith(loadingStatus: AudioLoadingStatus.none));
@@ -162,20 +164,25 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
     on<AudioEventButtonClicked>((event, emit) async {
       switch (event.mediaButton) {
         case MediaButton.media:
-          if (state.loadingStatus == AudioLoadingStatus.playing) {
+          if (_currentState.playing) {
             add(AudioEventPause());
-          } else if (state.loadingStatus == AudioLoadingStatus.paused) {
-            add(AudioEventResume());
+          } else {
+            if (_currentState.processingState == ProcessingState.ready) add(AudioEventResume());
           }
           break;
-        // Remove these, let AudioEventNext / AudioEventPrevious handle it
         case MediaButton.next:
-          add(AudioEventNext());
+          if (state.album != null) {
+            int index = state.album!.indexWhere((e) => e.contentId == state.audioContent?.contentId);
+            if (index >= 0 && state.album!.length > index + 1) {
+              add(AudioEventPlay(album: state.album!, playId: state.album![index + 1].contentId,));
+            }
+          }
           break;
         case MediaButton.previous:
-          add(AudioEventPrevious());
-          break;
-        default:
+          int index = state.album!.indexWhere((e) => e.contentId == state.audioContent?.contentId);
+          if (index > 0 && state.album!.length > 1) {
+            add(AudioEventPlay(album: state.album!, playId: state.album![index - 1].contentId));
+          }
           break;
       }
     }, transformer: restartable());
@@ -197,13 +204,13 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
       emit(state.copyWith(loadingStatus: AudioLoadingStatus.none));
     }, transformer: restartable());
 
-    on<AudioEventNext>((event, emit) async {
+    /*on<AudioEventNext>((event, emit) async {
       await _audioManager.seekToNext();
     }, transformer: restartable());
 
     on<AudioEventPrevious>((event, emit) async {
       await _audioManager.seekToPrevious();
-    }, transformer: restartable());
+    }, transformer: restartable());*/
 
     on<AudioEventAutoPlay>((event, emit) {
       emit(state.copyWith(isAutoPlay: event.isAutoPlay));
@@ -292,10 +299,6 @@ class AudioEventPause extends AudioEvent {}
 class AudioEventResume extends AudioEvent {}
 
 class AudioEventStop extends AudioEvent {}
-
-class AudioEventNext extends AudioEvent {}
-
-class AudioEventPrevious extends AudioEvent {}
 
 class AudioEventAutoPlay extends AudioEvent {
   final bool isAutoPlay;

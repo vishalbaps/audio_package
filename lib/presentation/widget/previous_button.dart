@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,7 +27,9 @@ class PreviousButton extends StatelessWidget {
         return IconButton(
           icon: Icon(previousIcon, size: iconSize, color: state.isPreviousAvailable ? iconColor : Colors.grey),
           onPressed: () {
-            state.isPreviousAvailable ? context.read<AudioBloc>().add(AudioEventPrevious()) : null;
+            state.isPreviousAvailable
+                ? context.read<AudioBloc>().add(AudioEventButtonClicked(MediaButton.previous))
+                : null;
           },
           padding: padding,
           style: buttonStyle,

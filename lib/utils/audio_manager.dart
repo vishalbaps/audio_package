@@ -196,6 +196,7 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
     );
   }
 
+  @override
   Future<void> play() async {
     await _session?.setActive(true);
     if (!mediaItem.hasValue) {
@@ -205,11 +206,13 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
     await _player.play();
   }
 
+  @override
   Future<void> pause() async {
     await _session?.setActive(false);
     await _player.pause();
   }
 
+  @override
   Future<void> stop() async {
     // _durationController.sink.add((Duration.zero, Duration.zero));
     playbackState.add(
@@ -223,6 +226,7 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
     await play();
   }
 
+  @override
   Future<void> seek(Duration duration) async {
     await _player.seek(duration);
   }
@@ -242,25 +246,28 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
     await _player.setSpeed(audioSpeed);
   }
 
-  Future<void> seekToNext() async {
+  /*Future<void> seekToNext() async {
     await _player.seekToNext();
-    // _buttonController.add(MediaButton.next);
+    _buttonController.add(MediaButton.next);
   }
 
   Future<void> seekToPrevious() async {
     await _player.seekToPrevious();
-    // _buttonController.add(MediaButton.previous);
-  }
+    _buttonController.add(MediaButton.previous);
+  }*/
 
+  @override
   Future<void> click([MediaButton button = MediaButton.media]) async {
     _buttonController.sink.add(button);
   }
 
+  @override
   Future<void> skipToNext() async {
-    await seekToNext();
+    _buttonController.add(MediaButton.next);
   }
 
+  @override
   Future<void> skipToPrevious() async {
-    await seekToPrevious();
+    _buttonController.add(MediaButton.previous);
   }
 }
