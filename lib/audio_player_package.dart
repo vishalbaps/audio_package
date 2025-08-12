@@ -1,4 +1,3 @@
-export 'src/bloc/audio_bloc.dart';
 export 'src/internal/audio_player_wrapper.dart';
 export 'src/models/audio_content.dart';
 export 'src/presentation/navigation_screen.dart';
@@ -14,3 +13,7 @@ export 'src/presentation/widget/repeat.dart';
 export 'src/presentation/widget/seek_bar.dart';
 export 'src/presentation/widget/shuffle.dart';
 export 'src/utils/enum.dart';
+
+
+//seekbar
+export 'src/managers/slider_seekbar_manager.dart';
