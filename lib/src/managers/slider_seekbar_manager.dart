@@ -10,13 +10,13 @@ class SliderSeekManager {
   SliderSeekManager() : _bloc = GetIt.I<SliderSeekBloc>();
 
   /// Public streams for package users
-  Stream<Duration> get currentDurationStream => _bloc.stream.map((s) => s.currentDuration).distinct();
+  Stream<SliderSeekState> get seekBarStateStream => _bloc.stream;
 
-  Stream<Duration> get totalDurationStream => _bloc.stream.map((s) => s.totalDuration).distinct();
-
-  Stream<bool> get isUserSeekStream => _bloc.stream.map((s) => s.isUserSeek).distinct();
-
-  Stream<double> get playPositionStream => _bloc.stream.map((s) => s.playPosition).distinct();
+  // Stream<Duration> get totalDurationStream => _bloc.stream.map((s) => s.totalDuration).distinct();
+  //
+  // Stream<bool> get isUserSeekStream => _bloc.stream.map((s) => s.isUserSeek).distinct();
+  //
+  // Stream<double> get playPositionStream => _bloc.stream.map((s) => s.playPosition).distinct();
 
   /// Public API to control the slider
   void setCurrentDuration(Duration duration) {

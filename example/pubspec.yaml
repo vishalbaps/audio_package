@@ -11,13 +11,13 @@ dependencies:
     sdk: flutter
   audio_player_package:
     path: ../   # Uses the package from the parent folder
-  freezed: ^3.0.0-0.0.dev
   get_it: 8.2.0
   equatable: 2.0.7
   flutter_bloc: 9.1.1
   injectable: 2.5.1
   json_annotation: 4.9.0
-  freezed_annotation: 3.1.0
+  freezed: 3.0.6
+  freezed_annotation: ^3.1.0
   bloc_concurrency: 0.3.0
 
 dev_dependencies:

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:audio_player_package/audio_player_package.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -7,27 +10,40 @@ part 'seekbar_bloc.freezed.dart';
 
 @singleton
 class SeekBarBloc extends Bloc<SeekBarEvent, SeekBarState> {
-  SeekBarBloc() : super(const SeekBarState()) {
-    on<SeekBarEventCurrent>(
-      (event, emit) => emit(state.copyWith(currentDuration: event.duration)),
-    );
+  final SliderSeekManager _sliderSeekManager;
 
-    on<SeekBarEventTotal>(
-      (event, emit) => emit(state.copyWith(totalDuration: event.duration)),
-    );
+  StreamSubscription? _durationSubscription;
 
-    on<SeekBarEventIsUserSeek>(
-      (event, emit) => emit(state.copyWith(isUserSeek: event.value)),
-    );
+  @override
+  Future<void> close() async {
+    _sliderSeekManager.dispose();
+    _durationSubscription?.cancel();
+    super.close();
+  }
 
-    on<SeekBarEventPlayPosition>(
-      (event, emit) => emit(state.copyWith(playPosition: event.position)),
-    );
+  SeekBarBloc(this._sliderSeekManager) : super(const SeekBarState()) {
+    _durationSubscription = _sliderSeekManager.seekBarStateStream.listen((slideState) {
+      if (!state.isUserSeek) {
+        add(SeekBarEventCurrent(
+            currentDuration: slideState.currentDuration,
+            totalDuration: slideState.totalDuration,
+            isUserSeek: slideState.isUserSeek,
+            playPosition: slideState.playPosition));
+      }
+    });
+
+    on<SeekBarSetCurrentDurationEvent>((event, emit) async {
+      _sliderSeekManager.setCurrentDuration(event.currentDuration);
+    }, transformer: droppable());
+
+    on<SeekBarUserSeekEvent>((event, emit) async {
+      _sliderSeekManager.setIsUserSeek(event.isUserSeek);
+    }, transformer: droppable());
   }
 }
 
 @freezed
-class SeekBarState with _$SeekBarState {
+sealed class SeekBarState with _$SeekBarState {
   const factory SeekBarState({
     @Default(Duration.zero) Duration currentDuration,
     @Default(Duration.zero) Duration totalDuration,
@@ -41,25 +57,27 @@ sealed class SeekBarEvent {
 }
 
 class SeekBarEventCurrent extends SeekBarEvent {
-  final Duration duration;
+  final Duration currentDuration;
+  final Duration totalDuration;
+  final bool isUserSeek;
+  final double playPosition;
 
-  const SeekBarEventCurrent(this.duration);
+  const SeekBarEventCurrent({
+    required this.currentDuration,
+    required this.totalDuration,
+    required this.isUserSeek,
+    required this.playPosition,
+  });
 }
 
-class SeekBarEventTotal extends SeekBarEvent {
-  final Duration duration;
+class SeekBarSetCurrentDurationEvent extends SeekBarEvent {
+  final Duration currentDuration;
 
-  const SeekBarEventTotal(this.duration);
+  SeekBarSetCurrentDurationEvent(this.currentDuration);
 }
 
-class SeekBarEventIsUserSeek extends SeekBarEvent {
-  final bool value;
+class SeekBarUserSeekEvent extends SeekBarEvent {
+  final bool isUserSeek;
 
-  const SeekBarEventIsUserSeek(this.value);
-}
-
-class SeekBarEventPlayPosition extends SeekBarEvent {
-  final double position;
-
-  const SeekBarEventPlayPosition(this.position);
+  SeekBarUserSeekEvent(this.isUserSeek);
 }

@@ -17,3 +17,4 @@ export 'src/utils/enum.dart';
 
 //seekbar
 export 'src/managers/slider_seekbar_manager.dart';
+export 'src/managers/audio_track_manager.dart';
