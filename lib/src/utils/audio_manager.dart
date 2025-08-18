@@ -15,6 +15,7 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
   StreamSubscription? _stateSubscription;
   StreamSubscription? _durationSubscription;
   StreamSubscription? _playBackSubscription;
+  StreamSubscription? _indexSubscription;
 
   Duration totalDuration = Duration.zero;
 
@@ -105,6 +106,16 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
           }
         }
       });
+      _indexSubscription = _player.currentIndexStream.listen((index) {
+        final sequence = _player.sequence;
+        if (index != null && index < sequence.length) {
+          final currentItem = sequence[index].tag as MediaItem;
+          if (_currentContent?.id != currentItem.id) {
+            _currentContent = currentItem;
+            mediaItem.add(currentItem.copyWith(duration: _player.duration));
+          }
+        }
+      });
     });
   }
 
@@ -136,6 +147,7 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
   void dispose() {
     _durationController.close();
     _stateController.close();
+    _indexSubscription?.cancel();
     _stateSubscription?.cancel();
     _playBackSubscription?.cancel();
     _durationSubscription?.cancel();

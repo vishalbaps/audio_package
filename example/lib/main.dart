@@ -1,9 +1,12 @@
 import 'package:audio_player_package/audio_player_package.dart';
 import 'package:audio_player_package/src/configure.dart';
 import 'package:audio_player_package/src/models/audio_notification_settings.dart';
+import 'package:audio_player_package_example/bloc/audio_track_bloc.dart';
+import 'package:audio_player_package_example/bloc/seekbar_bloc.dart';
 import 'package:audio_player_package_example/presentation/now_playing_screen.dart';
 import 'package:audio_player_package_example/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
@@ -34,12 +37,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AudioPlayerWrapper(
-        audioNotificationSettings: AudioNotificationSettings(
-            androidNotificationChannelId: "my_channel_id",
-            androidNotificationChannelName: "My Channel Name",
-            androidNotificationIcon: 'mipmap/ic_launcher'),
-        child: MaterialApp.router(routerConfig: router));
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AudioTrackBloc>(create: (context) => AudioTrackBloc(AudioTrackManager())),
+        BlocProvider<SeekBarBloc>(create: (context) => SeekBarBloc(SliderSeekManager())),
+      ],
+      child: AudioPlayerWrapper(
+          audioNotificationSettings: AudioNotificationSettings(
+              androidNotificationChannelId: "my_channel_id",
+              androidNotificationChannelName: "My Channel Name",
+              androidNotificationIcon: 'mipmap/ic_launcher'),
+          child: MaterialApp.router(routerConfig: router)),
+    );
   }
 }
 

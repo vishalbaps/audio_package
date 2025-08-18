@@ -60,7 +60,7 @@ class SliderSeekBloc extends Bloc<SliderSeekEvent, SliderSeekState> {
 }
 
 @freezed
-class SliderSeekState with _$SliderSeekState {
+sealed class SliderSeekState with _$SliderSeekState {
   const factory SliderSeekState(
     Duration currentDuration,
     Duration totalDuration,

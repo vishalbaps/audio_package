@@ -174,7 +174,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
           if (state.album != null) {
             int index = state.album!.indexWhere((e) => e.contentId == state.audioContent?.contentId);
             if (index >= 0 && state.album!.length > index + 1) {
-              add(AudioEventPlay(album: state.album!, playId: state.album![index + 1].contentId,));
+              add(AudioEventPlay(album: state.album!, playId: state.album![index + 1].contentId));
             }
           }
           break;
@@ -241,7 +241,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
 }
 
 @freezed
-class AudioState with _$AudioState {
+sealed class AudioState with _$AudioState {
   const factory AudioState.playing(
     AudioLoadingStatus loadingStatus, {
     List<AudioContent>? album,
