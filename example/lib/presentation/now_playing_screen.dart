@@ -23,86 +23,93 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
           child: Text("Currently there is no any Audio played"),
         );
       }
-      return NavigationScreen(
-        miniPlayerType: MiniPlayerType.top,
-        title: Text("Home Details Screen"),
-        child: Stack(fit: StackFit.expand, children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: currentTrack.thumbUrl != null && currentTrack.thumbUrl!.isNotEmpty
-                          ? Image.network(
-                              currentTrack.thumbUrl!,
-                              width: MediaQuery.of(context).size.width,
-                              height: 300,
-                              fit: BoxFit.cover,
-                            )
-                          : Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 300,
-                              color: Colors.grey,
-                              child: const Icon(Icons.music_note, color: Colors.white),
-                            ),
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Home Details Screen"),
+        ),
+        body: NavigationScreen(
+          miniPlayerType: MiniPlayerType.top,
+          child: Stack(fit: StackFit.expand, children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 50,
                     ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Text(
-                    currentTrack.contentTitle,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
+                    Center(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: currentTrack.thumbUrl != null && currentTrack.thumbUrl!.isNotEmpty
+                            ? Image.network(
+                                currentTrack.thumbUrl!,
+                                width: MediaQuery.of(context).size.width,
+                                height: 300,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 300,
+                                color: Colors.grey,
+                                child: const Icon(Icons.music_note, color: Colors.white),
+                              ),
+                      ),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    currentTrack.artist ?? "",
-                    style: TextStyle(
-                      color: Colors.black.withValues(alpha: 0.8),
-                      fontSize: 18,
+                    SizedBox(
+                      height: 15,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  AudioSpeed(),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  AudioSeekBar(),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Shuffle(),
-                      PreviousButton(),
-                      PlayPauseButton(currentTrack: currentTrack, album: state.album ?? []),
-                      NextButton(),
-                      Repeat(),
-                    ],
-                  ),
-                ],
+                    Text(
+                      currentTrack.contentTitle,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      currentTrack.artist ?? "",
+                      style: TextStyle(
+                        color: Colors.black.withValues(alpha: 0.8),
+                        fontSize: 18,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    AudioSpeed(),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    AudioSeekBar(),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Shuffle(),
+                        PreviousButton(),
+                        PlayPauseButton(currentTrack: currentTrack, album: state.album ?? []),
+                        NextButton(),
+                        Repeat(),
+                      ],
+                    ),
+                    Row(
+                      children: [Text("Want Auto play?"), AutoPlaySwitch()],
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-          AudioPlayerDraggableAlbum()
-        ]),
+            AudioPlayerDraggableAlbum()
+          ]),
+        ),
       );
     });
   }

@@ -17,7 +17,8 @@ class AudioContent {
   String? thumbUrl;
   String? artist;
   String? album;
-  String url;
+  String audioUrl;
+  String? downloadedAudioUrl;
 
   AudioContent({
     required this.contentId,
@@ -27,7 +28,8 @@ class AudioContent {
     this.thumbUrl,
     this.artist,
     this.album,
-    required this.url,
+    this.downloadedAudioUrl,
+    required this.audioUrl,
   });
 
   AudioContent copy() => AudioContent.fromJson(jsonDecode(jsonEncode(this)));
@@ -43,7 +45,7 @@ extension ContentExtraFunction on AudioContent {
 
     return MediaItem(
       //id is take care as a audio url
-      id: url,
+      id: audioUrl,
       title: contentTitle,
       displayTitle: contentTitle,
       displayDescription: description,
@@ -60,7 +62,7 @@ extension AudioContentFunction on MediaItem {
     return AudioContent(
       contentId: extras?["contentId"],
       contentTitle: title,
-      url: id,
+      audioUrl: id,
       artist: artist,
       album: album,
       subTitle: extras?["subTitle"],

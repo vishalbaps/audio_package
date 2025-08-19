@@ -13,20 +13,14 @@ class NavigationScreen extends StatelessWidget {
   final void Function(List<AudioContent> album, AudioContent track)? onTapTopView;
   final MiniPlayerType miniPlayerType;
   final Widget child;
-  final PreferredSizeWidget? appbar;
-  final bool isShowAutoPlaySwitch;
-  final Text? title;
 
   const NavigationScreen({
     super.key,
     this.onMiniPlayerTap,
     this.onTapQueueIcon,
     this.miniPlayerType = MiniPlayerType.bottom,
-    this.appbar,
     required this.child,
     this.onTapTopView,
-    this.isShowAutoPlaySwitch = false,
-    this.title,
   });
 
   @override
@@ -42,20 +36,6 @@ class NavigationScreen extends StatelessWidget {
 
         final miniPlayerTop = MiniPlayerTop(onTap: (album, track) => onTapTopView?.call(album, track));
         return Scaffold(
-          appBar: AppBar(
-            title: title,
-            actions:
-                isShowAutoPlaySwitch
-                    ? [
-                      Switch(
-                        value: state.isAutoPlay,
-                        onChanged: (value) {
-                          context.read<AudioBloc>().add(AudioEventAutoPlay(value));
-                        },
-                      ),
-                    ]
-                    : null,
-          ),
           body: Column(
             children: [
               if (miniPlayerType == MiniPlayerType.top && isAudioActive) miniPlayerTop,

@@ -2,7 +2,7 @@ import 'package:audio_player_package/src/presentation/widget/play_pause_button.d
 import 'package:flutter/material.dart';
 import '../../models/audio_content.dart';
 
-class AudioPlayerTile extends StatelessWidget {
+class AudioPlayerDefaultListing extends StatelessWidget {
   final List<AudioContent> album;
   final TextStyle? titleStyle;
   final TextStyle? subTitleStyle;
@@ -15,7 +15,7 @@ class AudioPlayerTile extends StatelessWidget {
   final double tileBorderRadius;
   final void Function(List<AudioContent> album, AudioContent currentTrack)? onTapView;
 
-  const AudioPlayerTile({
+  const AudioPlayerDefaultListing({
     super.key,
     required this.album,
     this.titleStyle,

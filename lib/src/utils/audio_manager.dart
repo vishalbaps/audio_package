@@ -163,16 +163,11 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
     _currentContent = media;
     await _session?.setActive(true);
 
-    final playlist = ConcatenatingAudioSource(
-      children:
-          album!.map((audioContent) {
-            return AudioSource.uri(Uri.parse(audioContent.url), tag: audioContent.media);
-          }).toList(),
-    );
-
     try {
-      duration = await _player.setAudioSource(
-        playlist,
+      duration = await _player.setAudioSources(
+        album!.map((audioContent) {
+          return AudioSource.uri(Uri.parse(audioContent.audioUrl), tag: audioContent.media);
+        }).toList(),
         initialPosition: seekTo,
         preload: true,
         initialIndex: initialIndex,

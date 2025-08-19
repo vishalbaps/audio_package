@@ -23,14 +23,20 @@ class SeekBarBloc extends Bloc<SeekBarEvent, SeekBarState> {
 
   SeekBarBloc(this._sliderSeekManager) : super(const SeekBarState()) {
     _durationSubscription = _sliderSeekManager.seekBarStateStream.listen((slideState) {
-      if (!state.isUserSeek) {
-        add(SeekBarEventCurrent(
+        add(_SeekBarEventListen(
             currentDuration: slideState.currentDuration,
             totalDuration: slideState.totalDuration,
             isUserSeek: slideState.isUserSeek,
             playPosition: slideState.playPosition));
-      }
     });
+
+    on<_SeekBarEventListen>((event, emit) async {
+      emit(state.copyWith(
+          currentDuration: event.currentDuration,
+          totalDuration: event.totalDuration,
+          isUserSeek: event.isUserSeek,
+          playPosition: event.playPosition));
+    }, transformer: droppable());
 
     on<SeekBarSetCurrentDurationEvent>((event, emit) async {
       _sliderSeekManager.setCurrentDuration(event.currentDuration);
@@ -56,13 +62,13 @@ sealed class SeekBarEvent {
   const SeekBarEvent();
 }
 
-class SeekBarEventCurrent extends SeekBarEvent {
+class _SeekBarEventListen extends SeekBarEvent {
   final Duration currentDuration;
   final Duration totalDuration;
   final bool isUserSeek;
   final double playPosition;
 
-  const SeekBarEventCurrent({
+  const _SeekBarEventListen({
     required this.currentDuration,
     required this.totalDuration,
     required this.isUserSeek,

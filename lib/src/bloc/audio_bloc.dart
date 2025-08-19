@@ -71,7 +71,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
       int index = event.album.indexWhere((e) => e.contentId == event.playId);
 
       if (index >= 0) {
-        if (event.album[index].url.toLowerCase().startsWith("http") && !await _internetConnectivity.hasInternet()) {
+        if (event.album[index].audioUrl.toLowerCase().startsWith("http") && !await _internetConnectivity.hasInternet()) {
           emit(
             state.copyWith(
               loadingStatus: AudioLoadingStatus.error,

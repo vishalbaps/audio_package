@@ -24,11 +24,31 @@ class AudioTrackBloc extends Bloc<AudioTrackEvent, AudioTrackState> {
   AudioTrackBloc(this._audioTrackManager) : super(const AudioTrackState()) {
     _audioStateSubscription = _audioTrackManager.audioStateStream.listen((audioState) {
       if (audioState.audioContent != null)
-        add(AudioTrackCurrentEvent(currentAudioContent: audioState.audioContent, album: audioState.album));
+        add(_CurrentPlayedAudio(
+            currentAudioContent: audioState.audioContent!,
+            album: audioState.album ?? [],
+            loadingStatus: audioState.loadingStatus));
     });
 
-    on<AudioTrackCurrentEvent>((event, emit) async {
-      emit(state.copyWith(currentAudioContent: event.currentAudioContent,album: event.album));
+    on<_CurrentPlayedAudio>((event, emit) async {
+      emit(state.copyWith(
+          currentAudioContent: event.currentAudioContent, album: event.album, loadingStatus: event.loadingStatus));
+    }, transformer: droppable());
+
+    on<PlayNewAudio>((event, emit) async {
+      _audioTrackManager.play(event.album, event.playId);
+    }, transformer: droppable());
+
+    on<AudioPause>((event, emit) async {
+      _audioTrackManager.pause();
+    }, transformer: droppable());
+
+    on<AudioResume>((event, emit) async {
+      _audioTrackManager.resume();
+    }, transformer: droppable());
+
+    on<AudioStop>((event, emit) async {
+      _audioTrackManager.stop();
     }, transformer: droppable());
   }
 }
@@ -38,6 +58,7 @@ sealed class AudioTrackState with _$AudioTrackState {
   const factory AudioTrackState({
     @Default(null) AudioContent? currentAudioContent,
     @Default([]) List<AudioContent>? album,
+    @Default(AudioLoadingStatus.none) AudioLoadingStatus loadingStatus,
   }) = _AudioTrackState;
 }
 
@@ -45,16 +66,23 @@ sealed class AudioTrackEvent {
   const AudioTrackEvent();
 }
 
-class AudioTrackCurrentEvent extends AudioTrackEvent {
-  final AudioContent? currentAudioContent;
-  final List<AudioContent>? album;
+class _CurrentPlayedAudio extends AudioTrackEvent {
+  final AudioContent currentAudioContent;
+  final List<AudioContent> album;
+  final AudioLoadingStatus loadingStatus;
 
-  AudioTrackCurrentEvent({this.currentAudioContent, this.album});
+  _CurrentPlayedAudio({required this.currentAudioContent, required this.album, required this.loadingStatus});
 }
 
-class AudioTrackPlayAudioEvent extends AudioTrackEvent {
+class PlayNewAudio extends AudioTrackEvent {
   final List<AudioContent> album;
   final String playId;
 
-  AudioTrackPlayAudioEvent({required this.album, required this.playId});
+  PlayNewAudio({required this.album, required this.playId});
 }
+
+class AudioPause extends AudioTrackEvent {}
+
+class AudioResume extends AudioTrackEvent {}
+
+class AudioStop extends AudioTrackEvent {}

@@ -4,7 +4,6 @@ import 'package:injectable/injectable.dart';
 import '../../audio_player_package.dart';
 import '../bloc/audio_bloc.dart';
 
-@singleton
 class AudioTrackManager {
   final AudioBloc _audioBloc;
 

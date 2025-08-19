@@ -14,7 +14,8 @@ AudioContent _$AudioContentFromJson(Map<String, dynamic> json) => AudioContent(
   thumbUrl: json['thumbUrl'] as String?,
   artist: json['artist'] as String?,
   album: json['album'] as String?,
-  url: json['url'] as String,
+  downloadedAudioUrl: json['downloadedAudioUrl'] as String?,
+  audioUrl: json['audioUrl'] as String,
 );
 
 Map<String, dynamic> _$AudioContentToJson(AudioContent instance) =>
@@ -26,5 +27,6 @@ Map<String, dynamic> _$AudioContentToJson(AudioContent instance) =>
       'thumbUrl': instance.thumbUrl,
       'artist': instance.artist,
       'album': instance.album,
-      'url': instance.url,
+      'audioUrl': instance.audioUrl,
+      'downloadedAudioUrl': instance.downloadedAudioUrl,
     };

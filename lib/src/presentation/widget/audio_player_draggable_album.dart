@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/audio_bloc.dart';
 import '../../utils/sliver_utils.dart';
-import 'audio_player_tile.dart';
+import 'audio_player_default_listing.dart';
 
 class AudioPlayerDraggableAlbum extends StatelessWidget {
   final BoxDecoration? decoration;
@@ -66,7 +66,7 @@ class AudioPlayerDraggableAlbum extends StatelessWidget {
                     },
                     color: containerColor,
                   ),
-                  SliverList.list(children: [AudioPlayerTile(album: state.album ?? [])]),
+                  SliverList.list(children: [AudioPlayerDefaultListing(album: state.album ?? [])]),
                 ],
               ),
             );
