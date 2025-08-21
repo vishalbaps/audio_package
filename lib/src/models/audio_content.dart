@@ -32,6 +32,34 @@ class AudioContent {
     required this.audioUrl,
   });
 
+  AudioContent copyWith({
+    String? contentId,
+    String? contentTitle,
+    String? subTitle,
+    String? description,
+    String? thumbUrl,
+    String? artist,
+    String? album,
+    String? audioUrl,
+    String? downloadedAudioUrl,
+  }) {
+    return AudioContent(
+      contentId: contentId ?? this.contentId,
+      contentTitle: contentTitle ?? this.contentTitle,
+      subTitle: subTitle ?? this.subTitle,
+      description: description ?? this.description,
+      thumbUrl: thumbUrl ?? this.thumbUrl,
+      artist: artist ?? this.artist,
+      album: album ?? this.album,
+      audioUrl: audioUrl ?? this.audioUrl,
+      downloadedAudioUrl: downloadedAudioUrl ?? this.downloadedAudioUrl,
+    );
+  }
+
+  factory AudioContent.empty() {
+    return AudioContent(contentId: '', audioUrl: '', contentTitle: '');
+  }
+
   AudioContent copy() => AudioContent.fromJson(jsonDecode(jsonEncode(this)));
 
   factory AudioContent.fromJson(Map<String, dynamic> json) => _$AudioContentFromJson(json);

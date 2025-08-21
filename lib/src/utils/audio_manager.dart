@@ -166,7 +166,9 @@ class AudioManager extends BaseAudioHandler with SeekHandler {
     try {
       duration = await _player.setAudioSources(
         album!.map((audioContent) {
-          return AudioSource.uri(Uri.parse(audioContent.audioUrl), tag: audioContent.media);
+          return audioContent.downloadedAudioUrl != null
+              ? AudioSource.file(audioContent.downloadedAudioUrl!, tag: audioContent.media)
+              : AudioSource.uri(Uri.parse(audioContent.audioUrl), tag: audioContent.media);
         }).toList(),
         initialPosition: seekTo,
         preload: true,

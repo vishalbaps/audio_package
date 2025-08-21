@@ -1,16 +1,24 @@
+import 'dart:io';
+
 import 'package:audio_player_package/audio_player_package.dart';
 import 'package:audio_player_package/src/models/audio_notification_settings.dart';
 import 'package:audio_player_package_example/bloc/audio_track_bloc.dart';
+import 'package:audio_player_package_example/bloc/download_bloc.dart';
 import 'package:audio_player_package_example/bloc/seekbar_bloc.dart';
 import 'package:audio_player_package_example/presentation/custom_listing/custom_listing_screen.dart';
+import 'package:audio_player_package_example/presentation/custom_listing/custom_listing_with_download_screen.dart';
 import 'package:audio_player_package_example/presentation/now_playing_screen.dart';
 import 'package:audio_player_package_example/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+
+import 'configure.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await configureDependenciesExample();
   //need to implement from library package
   await AudioPlayerConfig.init(
     audioNotificationSettings: AudioNotificationSettings(
@@ -46,6 +54,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<AudioTrackBloc>(create: (context) => AudioTrackBloc(AudioTrackManager())),
         BlocProvider<SeekBarBloc>(create: (context) => SeekBarBloc(SliderSeekManager())),
+        BlocProvider<DownloadBloc>(create: (context) => GetIt.I<DownloadBloc>()..add(DownloadEventInitialize())),
       ],
       child: MaterialApp.router(routerConfig: router),
     ));
@@ -88,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text("Custom Listing with download feature"),
             subtitle: Text("download is not part of our package for now. any thoughts? for it "),
             onTap: () {
-              context.push(CustomListingScreen.path);
+              context.push(CustomListingWithDownloadScreen.path);
             },
           ),
         ],
