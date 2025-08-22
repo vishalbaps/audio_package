@@ -10,7 +10,7 @@ part 'seekbar_bloc.freezed.dart';
 
 @singleton
 class SeekBarBloc extends Bloc<SeekBarEvent, SeekBarState> {
-  final SliderSeekManager _sliderSeekManager;
+  final SliderSeekManager _sliderSeekManager = SliderSeekManager();
 
   StreamSubscription? _durationSubscription;
 
@@ -21,7 +21,7 @@ class SeekBarBloc extends Bloc<SeekBarEvent, SeekBarState> {
     super.close();
   }
 
-  SeekBarBloc(this._sliderSeekManager) : super(const SeekBarState()) {
+  SeekBarBloc() : super(const SeekBarState()) {
     _durationSubscription = _sliderSeekManager.seekBarStateStream.listen((slideState) {
         add(_SeekBarEventListen(
             currentDuration: slideState.currentDuration,

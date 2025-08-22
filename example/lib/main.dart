@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:audio_player_package/audio_player_package.dart';
 import 'package:audio_player_package/src/models/audio_notification_settings.dart';
 import 'package:audio_player_package_example/bloc/audio_track_bloc.dart';
@@ -18,7 +16,7 @@ import 'configure.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await configureDependenciesExample();
+
   //need to implement from library package
   await AudioPlayerConfig.init(
     audioNotificationSettings: AudioNotificationSettings(
@@ -26,6 +24,8 @@ Future<void> main() async {
         androidNotificationChannelName: "My Channel Name",
         androidNotificationIcon: 'mipmap/ic_launcher'),
   );
+
+  await configureDependenciesExample();
   runApp(const MyApp());
 }
 
@@ -52,8 +52,8 @@ class MyApp extends StatelessWidget {
     return AudioPlayerWrapper(
         child: MultiBlocProvider(
       providers: [
-        BlocProvider<AudioTrackBloc>(create: (context) => AudioTrackBloc(AudioTrackManager())),
-        BlocProvider<SeekBarBloc>(create: (context) => SeekBarBloc(SliderSeekManager())),
+        BlocProvider<AudioTrackBloc>(create: (context) => GetIt.I<AudioTrackBloc>()),
+        BlocProvider<SeekBarBloc>(create: (context) => GetIt.I<SeekBarBloc>()),
         BlocProvider<DownloadBloc>(create: (context) => GetIt.I<DownloadBloc>()..add(DownloadEventInitialize())),
       ],
       child: MaterialApp.router(routerConfig: router),

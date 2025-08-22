@@ -10,7 +10,7 @@ part 'audio_track_bloc.freezed.dart';
 
 @singleton
 class AudioTrackBloc extends Bloc<AudioTrackEvent, AudioTrackState> {
-  final AudioTrackManager _audioTrackManager;
+  final AudioTrackManager _audioTrackManager = AudioTrackManager();
 
   StreamSubscription? _audioStateSubscription;
 
@@ -21,7 +21,7 @@ class AudioTrackBloc extends Bloc<AudioTrackEvent, AudioTrackState> {
     super.close();
   }
 
-  AudioTrackBloc(this._audioTrackManager) : super(const AudioTrackState()) {
+  AudioTrackBloc() : super(const AudioTrackState()) {
     _audioStateSubscription = _audioTrackManager.audioStateStream.listen((audioState) {
       if (audioState.loadingStatus == AudioLoadingStatus.error) {
         add(_CurrentPlayedAudio(

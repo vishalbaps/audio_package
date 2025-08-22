@@ -1,5 +1,4 @@
 import 'package:get_it/get_it.dart';
-import 'package:injectable/injectable.dart';
 
 import '../../audio_player_package.dart';
 import '../bloc/audio_bloc.dart';
