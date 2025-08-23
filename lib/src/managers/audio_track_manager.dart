@@ -26,5 +26,9 @@ class AudioTrackManager {
 
   void setAudioSpeed(double speed) => _audioBloc.add(AudioEventAudioSpeed(speed));
 
+  void next() => _audioBloc.add(AudioEventNext());
+
+  void previous() => _audioBloc.add(AudioEventPrevious());
+
   Future<void> dispose() => _audioBloc.close();
 }

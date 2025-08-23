@@ -1,8 +1,11 @@
 import 'package:audio_player_package_example/main.dart';
+import 'package:audio_player_package_example/presentation/audio_component.dart';
 import 'package:audio_player_package_example/presentation/custom_listing/custom_listing_screen.dart';
 import 'package:audio_player_package_example/presentation/custom_listing/custom_listing_with_download_screen.dart';
+import 'package:audio_player_package_example/presentation/menu_list_screen.dart';
 import 'package:audio_player_package_example/presentation/now_playing_screen.dart';
 import 'package:audio_player_package_example/presentation/root_screen.dart';
+import 'package:audio_player_package_example/presentation/seekbar_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../transition.dart';
@@ -28,8 +31,19 @@ var router = GoRouter(
             path: CustomListingWithDownloadScreen.path,
             pageBuilder: (context, state) => buildCustomTransitionPage(child: const CustomListingWithDownloadScreen())),
         GoRoute(
-            path: NowPlayingScreen.path,
-            pageBuilder: (context, state) => buildCustomTransitionPage(child: const NowPlayingScreen())),
+            path: MenuListScreen.path,
+            pageBuilder: (context, state) => buildCustomTransitionPage(child: const MenuListScreen()),
+            routes: [
+              GoRoute(
+                  path: NowPlayingScreen.id,
+                  pageBuilder: (context, state) => buildCustomTransitionPage(child: const NowPlayingScreen())),
+              GoRoute(
+                  path: SeekbarScreen.id,
+                  pageBuilder: (context, state) => buildCustomTransitionPage(child: const SeekbarScreen())),
+              GoRoute(
+                  path: AudioComponent.id,
+                  pageBuilder: (context, state) => buildCustomTransitionPage(child: const AudioComponent())),
+            ]),
       ],
     ),
   ],

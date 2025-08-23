@@ -1,11 +1,13 @@
 import 'package:audio_player_package/audio_player_package.dart';
+import 'package:audio_player_package_example/presentation/menu_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/audio_track_bloc.dart';
 
 class NowPlayingScreen extends StatefulWidget {
-  static String path = "/now_playing";
+  static String id = "now_playing";
+  static String path = "${MenuListScreen.path}/$id";
 
   const NowPlayingScreen({super.key});
 
@@ -25,10 +27,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
       }
       return Scaffold(
         appBar: AppBar(
-          title: Text("Home Details Screen"),
+          title: Text("Now Playing"),
         ),
         body: NavigationScreen(
-          miniPlayerType: MiniPlayerType.top,
+          miniPlayerType: MiniPlayerType.none,
           child: Stack(fit: StackFit.expand, children: [
             SingleChildScrollView(
               child: Padding(
@@ -36,8 +38,12 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [Text("Want Auto play?"), AutoPlaySwitch()],
+                    ),
                     SizedBox(
-                      height: 50,
+                      height: 20,
                     ),
                     Center(
                       child: ClipRRect(
@@ -100,9 +106,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                         Repeat(),
                       ],
                     ),
-                    Row(
-                      children: [Text("Want Auto play?"), AutoPlaySwitch()],
-                    )
                   ],
                 ),
               ),

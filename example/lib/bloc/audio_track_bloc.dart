@@ -5,6 +5,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:just_audio/just_audio.dart';
 
 part 'audio_track_bloc.freezed.dart';
 
@@ -23,26 +24,30 @@ class AudioTrackBloc extends Bloc<AudioTrackEvent, AudioTrackState> {
 
   AudioTrackBloc() : super(const AudioTrackState()) {
     _audioStateSubscription = _audioTrackManager.audioStateStream.listen((audioState) {
-      if (audioState.loadingStatus == AudioLoadingStatus.error) {
-        add(_CurrentPlayedAudio(
-            currentAudioContent: AudioContent.empty(),
-            album: audioState.album ?? [],
-            loadingStatus: AudioLoadingStatus.error,
-            error: audioState.failure?.message));
-      } else if (audioState.audioContent != null) {
-        add(_CurrentPlayedAudio(
-            currentAudioContent: audioState.audioContent!,
-            album: audioState.album ?? [],
-            loadingStatus: audioState.loadingStatus));
-      }
+      add(_CurrentPlayedAudio(
+        currentAudioContent:
+            audioState.loadingStatus == AudioLoadingStatus.error ? AudioContent.empty() : audioState.audioContent!,
+        album: audioState.album ?? [],
+        loadingStatus: audioState.loadingStatus,
+        error: audioState.failure?.message,
+        isNextAvailable: audioState.isNextAvailable,
+        isPreviousAvailable: audioState.isPreviousAvailable,
+        isShuffleEnabled: audioState.isShuffleEnabled,
+        loopMode: audioState.loopMode,
+      ));
     });
 
     on<_CurrentPlayedAudio>((event, emit) async {
       emit(state.copyWith(
-          currentAudioContent: event.currentAudioContent,
-          album: event.album,
-          loadingStatus: event.loadingStatus,
-          error: event.error));
+        currentAudioContent: event.currentAudioContent,
+        album: event.album,
+        loadingStatus: event.loadingStatus,
+        error: event.error,
+        isNextAvailable: event.isNextAvailable,
+        isPreviousAvailable: event.isPreviousAvailable,
+        isShuffleEnabled: event.isShuffleEnabled,
+        loopMode: event.loopMode,
+      ));
     }, transformer: droppable());
 
     on<PlayNewAudio>((event, emit) async {
@@ -59,6 +64,22 @@ class AudioTrackBloc extends Bloc<AudioTrackEvent, AudioTrackState> {
 
     on<AudioStop>((event, emit) async {
       _audioTrackManager.stop();
+    }, transformer: droppable());
+
+    on<AudioShuffle>((event, emit) async {
+      _audioTrackManager.toggleShuffle();
+    }, transformer: droppable());
+
+    on<AudioRepeat>((event, emit) async {
+      _audioTrackManager.toggleLoop();
+    }, transformer: droppable());
+
+    on<AudioNext>((event, emit) async {
+      _audioTrackManager.next();
+    }, transformer: droppable());
+
+    on<AudioPrevious>((event, emit) async {
+      _audioTrackManager.previous();
     }, transformer: droppable());
 
     on<AudioEventUpdateDownloaded>((event, emit) {
@@ -81,6 +102,10 @@ sealed class AudioTrackState with _$AudioTrackState {
     @Default([]) List<AudioContent>? album,
     @Default(AudioLoadingStatus.none) AudioLoadingStatus loadingStatus,
     @Default(null) String? error,
+    @Default(true) bool isNextAvailable,
+    @Default(false) bool isPreviousAvailable,
+    @Default(false) bool isShuffleEnabled,
+    @Default(LoopMode.off) LoopMode loopMode,
   }) = _AudioTrackState;
 }
 
@@ -93,12 +118,20 @@ class _CurrentPlayedAudio extends AudioTrackEvent {
   final List<AudioContent> album;
   final AudioLoadingStatus loadingStatus;
   final String? error;
+  final bool isNextAvailable;
+  final bool isPreviousAvailable;
+  final bool isShuffleEnabled;
+  final LoopMode loopMode;
 
   _CurrentPlayedAudio({
     required this.currentAudioContent,
     required this.album,
     required this.loadingStatus,
     this.error,
+    required this.isNextAvailable,
+    required this.isPreviousAvailable,
+    required this.isShuffleEnabled,
+    required this.loopMode,
   });
 }
 
@@ -114,6 +147,14 @@ class AudioPause extends AudioTrackEvent {}
 class AudioResume extends AudioTrackEvent {}
 
 class AudioStop extends AudioTrackEvent {}
+
+class AudioShuffle extends AudioTrackEvent {}
+
+class AudioRepeat extends AudioTrackEvent {}
+
+class AudioNext extends AudioTrackEvent {}
+
+class AudioPrevious extends AudioTrackEvent {}
 
 class AudioEventUpdateDownloaded extends AudioTrackEvent {
   final String audioUrl;

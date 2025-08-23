@@ -39,8 +39,9 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
 
   AudioBloc(this._audioManager, this._internetConnectivity) : super(const AudioState.playing(AudioLoadingStatus.none)) {
     _durationSubscription = _audioManager.durationStream.listen((duration) {
-      // controlling auto play
-      if (duration.$2 != Duration.zero && duration.$1 >= duration.$2 && !state.isAutoPlay) {
+      final currentAudioDuration = Duration(seconds: duration.$1.inSeconds);
+      final nextAudioDuration = Duration(seconds: duration.$2.inSeconds);
+      if (nextAudioDuration > Duration.zero && currentAudioDuration >= nextAudioDuration && !state.isAutoPlay) {
         _audioManager.pause();
       }
     });
@@ -55,7 +56,21 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
     });
 
     _buttonSubscription = _audioManager.buttonStream.listen((mediaButton) {
-      add(AudioEventButtonClicked(mediaButton));
+      switch (mediaButton) {
+        case MediaButton.media:
+          if (_currentState.playing) {
+            add(AudioEventPause());
+          } else {
+            if (_currentState.processingState == ProcessingState.ready) add(AudioEventResume());
+          }
+          break;
+        case MediaButton.next:
+          add(AudioEventNext());
+          break;
+        case MediaButton.previous:
+          add(AudioEventPrevious());
+          break;
+      }
     });
 
     _albumSubscription = _audioManager.albumItemStream.listen((albumItem) {
@@ -163,32 +178,6 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
       }
     }, transformer: restartable());
 
-    on<AudioEventButtonClicked>((event, emit) async {
-      switch (event.mediaButton) {
-        case MediaButton.media:
-          if (_currentState.playing) {
-            add(AudioEventPause());
-          } else {
-            if (_currentState.processingState == ProcessingState.ready) add(AudioEventResume());
-          }
-          break;
-        case MediaButton.next:
-          if (state.album != null) {
-            int index = state.album!.indexWhere((e) => e.contentId == state.audioContent?.contentId);
-            if (index >= 0 && state.album!.length > index + 1) {
-              add(AudioEventPlay(album: state.album!, playId: state.album![index + 1].contentId));
-            }
-          }
-          break;
-        case MediaButton.previous:
-          int index = state.album!.indexWhere((e) => e.contentId == state.audioContent?.contentId);
-          if (index > 0 && state.album!.length > 1) {
-            add(AudioEventPlay(album: state.album!, playId: state.album![index - 1].contentId));
-          }
-          break;
-      }
-    }, transformer: restartable());
-
     on<AudioEventPause>((event, emit) async {
       await _audioManager.pause();
       if (state.audioContent != null) {
@@ -206,13 +195,21 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
       emit(state.copyWith(loadingStatus: AudioLoadingStatus.none));
     }, transformer: restartable());
 
-    /*on<AudioEventNext>((event, emit) async {
-      await _audioManager.seekToNext();
+    on<AudioEventNext>((event, emit) async {
+      if (state.album != null) {
+        int index = state.album!.indexWhere((e) => e.contentId == state.audioContent?.contentId);
+        if (index >= 0 && state.album!.length > index + 1) {
+          add(AudioEventPlay(album: state.album!, playId: state.album![index + 1].contentId));
+        }
+      }
     }, transformer: restartable());
 
     on<AudioEventPrevious>((event, emit) async {
-      await _audioManager.seekToPrevious();
-    }, transformer: restartable());*/
+      int index = state.album!.indexWhere((e) => e.contentId == state.audioContent?.contentId);
+      if (index > 0 && state.album!.length > 1) {
+        add(AudioEventPlay(album: state.album!, playId: state.album![index - 1].contentId));
+      }
+    }, transformer: restartable());
 
     on<AudioEventAutoPlay>((event, emit) {
       emit(state.copyWith(isAutoPlay: event.isAutoPlay));
@@ -290,17 +287,15 @@ class AudioEventAudioSpeed extends AudioEvent {
   AudioEventAudioSpeed(this.audioSpeed);
 }
 
-class AudioEventButtonClicked extends AudioEvent {
-  final MediaButton mediaButton;
-
-  AudioEventButtonClicked(this.mediaButton);
-}
-
 class AudioEventPause extends AudioEvent {}
 
 class AudioEventResume extends AudioEvent {}
 
 class AudioEventStop extends AudioEvent {}
+
+class AudioEventNext extends AudioEvent {}
+
+class AudioEventPrevious extends AudioEvent {}
 
 class AudioEventAutoPlay extends AudioEvent {
   final bool isAutoPlay;

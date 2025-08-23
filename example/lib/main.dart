@@ -5,7 +5,7 @@ import 'package:audio_player_package_example/bloc/download_bloc.dart';
 import 'package:audio_player_package_example/bloc/seekbar_bloc.dart';
 import 'package:audio_player_package_example/presentation/custom_listing/custom_listing_screen.dart';
 import 'package:audio_player_package_example/presentation/custom_listing/custom_listing_with_download_screen.dart';
-import 'package:audio_player_package_example/presentation/now_playing_screen.dart';
+import 'package:audio_player_package_example/presentation/menu_list_screen.dart';
 import 'package:audio_player_package_example/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +16,6 @@ import 'configure.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   //need to implement from library package
   await AudioPlayerConfig.init(
     audioNotificationSettings: AudioNotificationSettings(
@@ -126,7 +125,7 @@ class _DefaultListingScreenState extends State<DefaultListingScreen> {
         child: AudioPlayerDefaultListing(
           album: album,
           onTapView: (album, track) {
-            context.push(NowPlayingScreen.path);
+            context.push(MenuListScreen.path);
           },
         ),
       ),
