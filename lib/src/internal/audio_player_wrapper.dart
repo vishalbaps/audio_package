@@ -4,18 +4,14 @@ import 'package:get_it/get_it.dart';
 
 import '../bloc/audio_bloc.dart';
 import '../bloc/slider_seek_bloc.dart';
-import '../models/audio_notification_settings.dart';
-import '../utils/audio_manager.dart';
 
 class AudioPlayerWrapper extends StatelessWidget {
   final Widget child;
 
-
-  const AudioPlayerWrapper({super.key, required this.child,});
+  const AudioPlayerWrapper({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-
     return MultiBlocProvider(
       providers: [
         BlocProvider<AudioBloc>(create: (context) => GetIt.I<AudioBloc>()),
